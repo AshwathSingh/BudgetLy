@@ -10,52 +10,58 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Query private var expenses: [ExpenseItem]
+    @Query private var categories: [ExpenseCategory]  // fixed typo
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
+        TabView {
+            HomeView()
+                .tabItem {
+                    Image(systemName: "house")
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
+            
+            ExpenseView()
+                .tabItem {
+                    Image(systemName: "list.bullet.rectangle.portrait.fill")
                 }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
+            
+            HistoryView()
+                .tabItem {
+                    Image(systemName: "chart.bar.horizontal.page")
                 }
-            }
-        } detail: {
-            Text("Select an item")
+            
+            Spacer()
+            
+            AddExpenseView()
+                .tabItem {
+                    Image(systemName: "plus")
+                }
         }
+        .tint(.primary)
+        .padding(.horizontal)
     }
+}
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
+func previewContentView() -> some View {
+    do {
+        let container = try ModelContainer(
+            for: ExpenseCategory.self, ExpenseItem.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+        seedSampleData(context: context)
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
+        return ContentView()
+            .environment(\.modelContext, context)
+
+    } catch {
+        fatalError("Failed to create model container: \(error)")
     }
 }
 
 #Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+    previewContentView()
 }
+
+
+
