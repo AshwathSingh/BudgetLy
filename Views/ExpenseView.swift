@@ -116,7 +116,7 @@ struct ExpensesGroupedView: View {
                                 subtitle: "\(expense.category.name) • \(expense.date.formatted(date: .abbreviated, time: .omitted))",
                                 amount: expense.amount,
                                 icon: expense.category.symbol,
-                                color: Color(expense.category.systemColorName)
+                                color: colorFromName(expense.category.systemColorName) // <-- fixed here
                             )
                         }
                     }
@@ -126,6 +126,7 @@ struct ExpensesGroupedView: View {
         }
     }
 }
+
 
 struct ExpensesCard: View {
     var title: String

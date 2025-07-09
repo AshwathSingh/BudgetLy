@@ -79,15 +79,16 @@ struct HomeView: View {
                             showMonthlyExpenses = true
                         }
                 }
+                .padding(.top, 0)
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-                .frame(height: 200)
+                .frame(height: 250)
 
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Your spending per category")
                             .font(.title3)
                             .fontWeight(.semibold)
-                        Text("Top 3 categories")
+                        Text("Top 3 categories this month")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -161,7 +162,7 @@ struct ExpenseWeeklyCardView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 150)
+        .frame(height: 200)
         .padding()
         .background(
             LinearGradient(
@@ -179,7 +180,7 @@ struct ExpenseMonthCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("You spent")
+                Text("You Spent")
                     .font(.headline)
                     .foregroundStyle(.white)
                 Spacer()
@@ -211,7 +212,7 @@ struct ExpenseMonthCardView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 150)
+        .frame(height: 200)
         .padding()
         .background(
             LinearGradient(
@@ -235,7 +236,10 @@ struct WeeklyExpensesSheetView: View {
             return []
         }
         let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart)!
-        return expenses.filter { $0.date >= weekStart && $0.date < weekEnd }
+
+        return expenses
+            .filter { $0.date >= weekStart && $0.date < weekEnd }
+            .sorted(by: { $0.date > $1.date }) // ✅ Newest to oldest
     }
 
     var totalAmount: Double {
@@ -251,6 +255,33 @@ struct WeeklyExpensesSheetView: View {
     }
 }
 
+struct MonthlyExpensesSheetView: View {
+    let expenses: [ExpenseItem]
+
+    var filteredExpenses: [ExpenseItem] {
+        let calendar = Calendar.current
+        let now = Date()
+
+        return expenses
+            .filter {
+                calendar.isDate($0.date, equalTo: now, toGranularity: .month) &&
+                calendar.isDate($0.date, equalTo: now, toGranularity: .year)
+            }
+            .sorted(by: { $0.date > $1.date }) // ✅ Newest to oldest
+    }
+
+    var totalAmount: Double {
+        filteredExpenses.reduce(0) { $0 + $1.amount }
+    }
+
+    var body: some View {
+        ExpensesSheetViewContent(
+            title: "This Month",
+            totalAmount: totalAmount,
+            expenses: filteredExpenses
+        )
+    }
+}
 
 struct ExpenseCardView: View {
     let amount: Double
@@ -303,32 +334,6 @@ struct ExpenseCardView: View {
     }
 }
 
-
-struct MonthlyExpensesSheetView: View {
-    let expenses: [ExpenseItem]
-
-    var filteredExpenses: [ExpenseItem] {
-        let calendar = Calendar.current
-        let now = Date()
-        return expenses.filter {
-            calendar.isDate($0.date, equalTo: now, toGranularity: .month) &&
-            calendar.isDate($0.date, equalTo: now, toGranularity: .year)
-        }
-    }
-
-    var totalAmount: Double {
-        filteredExpenses.reduce(0) { $0 + $1.amount }
-    }
-
-    var body: some View {
-        ExpensesSheetViewContent(
-            title: "This Month",
-            totalAmount: totalAmount,
-            expenses: filteredExpenses
-        )
-    }
-}
-
 struct ExpensesSheetViewContent: View {
     let title: String
     let totalAmount: Double
@@ -366,13 +371,13 @@ struct ExpensesSheetViewContent: View {
 
                 ScrollView(showsIndicators: false) {
                     LazyVStack(spacing: 12) {
-                        ForEach(expenses, id: \.self) { expense in
+                        ForEach(expenses, id: \.id) { expense in  // Use id instead of self for Identifiable
                             ExpensesCard(
                                 title: expense.note ?? expense.category.name,
                                 subtitle: "\(expense.category.name) • \(expense.date.formatted(date: .abbreviated, time: .omitted))",
                                 amount: expense.amount,
                                 icon: expense.category.symbol,
-                                color: Color(expense.category.systemColorName)
+                                color: colorFromName(expense.category.systemColorName)
                             )
                         }
                     }
@@ -385,8 +390,6 @@ struct ExpensesSheetViewContent: View {
         }
     }
 }
-
-
 
 struct HeaderView: View {
     var textField: String
