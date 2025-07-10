@@ -53,9 +53,10 @@ struct ExpenseView: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 16) {
                 HeaderView(textField: "Your Expenses")
-
+                Spacer()
                 TextField("Search expenses...", text: $searchText)
                     .padding(10)
+                    .padding(.top, 0)
                     .background(Color(.systemGray6))
                     .cornerRadius(12)
 
@@ -90,7 +91,7 @@ struct FilterScrollView: View {
                         .clipShape(Capsule())
                         .onTapGesture {
                             selectedFilter = filter
-                        }
+                    }
                 }
             }
         }
