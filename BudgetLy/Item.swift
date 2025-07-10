@@ -76,44 +76,35 @@ func seedSampleData(context: ModelContext) {
     let calendar = Calendar.current
 
     let expenses = [
-        ExpenseItem(amount: 5.20, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 8))!, note: "Coffee at Starbucks", category: foodCategory),
-        ExpenseItem(amount: 12.99, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 7))!, note: "Netflix Subscription", category: subscriptionsCategory),
-        ExpenseItem(amount: 58.75, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 6))!, note: "Weekly Groceries", category: groceriesCategory),
-        ExpenseItem(amount: 89.60, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 3))!, note: "Electric Bill Payment", category: billsCategory),
-        ExpenseItem(amount: 22.99, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 30))!, note: "New Book Purchase", category: booksCategory),
-        ExpenseItem(amount: 40.10, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 29))!, note: "Fuel for Car", category: fuelCategory),
-        ExpenseItem(amount: 14.50, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 27))!, note: "Medicine from Pharmacy", category: medicineCategory),
-        ExpenseItem(amount: 9.99, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 20))!, note: "Spotify Subscription", category: subscriptionsCategory),
-        ExpenseItem(amount: 35.00, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 18))!, note: "Miscellaneous Supplies", category: miscCategory),
-        ExpenseItem(amount: 11.00, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 15))!, note: "Movie Ticket", category: entertainmentCategory),
+        ExpenseItem(amount: 4.50, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 1))!, note: "Morning coffee", category: foodCategory),
+        ExpenseItem(amount: 9.99, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 2))!, note: "Netflix subscription", category: subscriptionsCategory),
+        ExpenseItem(amount: 54.30, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 3))!, note: "Weekly groceries", category: groceriesCategory),
+        ExpenseItem(amount: 85.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 3))!, note: "Electricity bill", category: billsCategory),
+        ExpenseItem(amount: 20.00, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 28))!, note: "New novel", category: booksCategory),
+        ExpenseItem(amount: 38.50, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 27))!, note: "Fuel refill", category: fuelCategory),
+        ExpenseItem(amount: 12.75, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 25))!, note: "Pharmacy visit", category: medicineCategory),
+        ExpenseItem(amount: 9.99, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 22))!, note: "Spotify subscription", category: subscriptionsCategory),
+        ExpenseItem(amount: 28.00, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 21))!, note: "Office supplies", category: miscCategory),
+        ExpenseItem(amount: 14.00, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 20))!, note: "Movie ticket", category: entertainmentCategory),
 
-        // Larger dataset with notes:
-        ExpenseItem(amount: 18.25, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 10))!, note: "Lunch at Cafe", category: foodCategory),
-        ExpenseItem(amount: 23.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 11))!, note: "Grocery Store Visit", category: groceriesCategory),
-        ExpenseItem(amount: 100.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 12))!, note: "Water Bill", category: billsCategory),
-        ExpenseItem(amount: 7.75, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 13))!, note: "Snack Purchase", category: foodCategory),
-        ExpenseItem(amount: 16.50, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 14))!, note: "Cold Medicine", category: medicineCategory),
-        ExpenseItem(amount: 54.99, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 15))!, note: "Concert Tickets", category: entertainmentCategory),
+        // More realistic recent expenses in July up to 10th
+        ExpenseItem(amount: 16.75, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 4))!, note: "Lunch at café", category: foodCategory),
+        ExpenseItem(amount: 22.40, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 5))!, note: "Grocery store run", category: groceriesCategory),
+        ExpenseItem(amount: 95.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 6))!, note: "Water bill payment", category: billsCategory),
+        ExpenseItem(amount: 6.25, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 7))!, note: "Afternoon snack", category: foodCategory),
+        ExpenseItem(amount: 15.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 8))!, note: "Cold medicine", category: medicineCategory),
+        ExpenseItem(amount: 50.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 9))!, note: "Concert tickets", category: entertainmentCategory),
+        ExpenseItem(amount: 42.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 10))!, note: "Dinner with friends", category: foodCategory),
 
-        // Additional entries:
-        ExpenseItem(amount: 45.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 16))!, note: "Dinner at Italian Restaurant", category: foodCategory),
-        ExpenseItem(amount: 80.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 17))!, note: "Monthly Gym Membership", category: subscriptionsCategory),
-        ExpenseItem(amount: 27.30, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 18))!, note: "Grocery Essentials", category: groceriesCategory),
-        ExpenseItem(amount: 120.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 19))!, note: "Internet Bill", category: billsCategory),
-        ExpenseItem(amount: 15.99, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 20))!, note: "Bookstore Purchase", category: booksCategory),
-        ExpenseItem(amount: 50.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 21))!, note: "Gas Station", category: fuelCategory),
-        ExpenseItem(amount: 18.20, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 22))!, note: "Pharmacy Refill", category: medicineCategory),
-        ExpenseItem(amount: 12.99, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 23))!, note: "Streaming Service", category: subscriptionsCategory),
-        ExpenseItem(amount: 30.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 24))!, note: "Office Supplies", category: miscCategory),
-        ExpenseItem(amount: 20.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 25))!, note: "Movie Night Snacks", category: entertainmentCategory)
+        // A few subscriptions and miscellaneous
+        ExpenseItem(amount: 14.99, date: calendar.date(from: DateComponents(year: 2025, month: 6, day: 30))!, note: "Streaming subscription", category: subscriptionsCategory),
+        ExpenseItem(amount: 25.00, date: calendar.date(from: DateComponents(year: 2025, month: 7, day: 2))!, note: "Miscellaneous supplies", category: miscCategory)
     ]
-
 
     // Insert expenses
     for expense in expenses {
         context.insert(expense)
     }
-
 }
 
 
