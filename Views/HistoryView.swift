@@ -36,9 +36,7 @@ struct HistoryView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 // Header
-                Text("Spending Trends")
-                    .font(.largeTitle.bold())
-                    .padding(.top)
+                HeaderView(textField: "Trends")
 
                 // Range Picker
                 Picker("Range", selection: $selectedRange) {
