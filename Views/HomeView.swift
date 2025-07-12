@@ -33,18 +33,17 @@ struct HomeView: View {
         let calendar = Calendar.current
         let now = Date()
 
-        // Get the start of the current week
         guard let weekStart = calendar.dateInterval(of: .weekOfYear, for: now)?.start else {
             return 0
         }
-
-        // Get the end of the week (7 days from start)
         let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart)!
 
-        return expenses
-            .filter { $0.date >= weekStart && $0.date < weekEnd }
-            .reduce(0) { $0 + $1.amount }
+        let weekExpenses = expenses.filter { $0.date >= weekStart && $0.date < weekEnd }
+        print("Expenses this week: \(weekExpenses.count)")
+
+        return weekExpenses.reduce(0) { $0 + $1.amount }
     }
+
 
 
     var topCategoriesWithTotals: [(category: ExpenseCategory, total: Double)] {

@@ -4,6 +4,7 @@
 //
 //  Created by Ashwath Singh on 09/07/25.
 //
+
 import SwiftUI
 import SwiftData
 
@@ -18,56 +19,28 @@ struct AddExpenseView: View {
     @State private var date: Date = Date()
     @State private var note: String = ""
 
-    // New states for adding category inline
-    @State private var isAddingCategory = false
-    @State private var newCategoryName = ""
-    @State private var newCategorySymbol = "star.fill"
-    @State private var newCategoryColorName = "blue"
-
-    // SF Symbols sample for picker (you can expand this)
-    private let sfSymbols = ["star.fill", "heart.fill", "car.fill", "house.fill", "cart.fill", "flame.fill", "bolt.fill", "gift.fill"]
-
-    // Color options (system colors)
-    private let colorOptions: [(name: String, color: Color)] = [
-        ("red", .red),
-        ("orange", .orange),
-        ("yellow", .yellow),
-        ("green", .green),
-        ("mint", .mint),
-        ("teal", .teal),
-        ("blue", .blue),
-        ("indigo", .indigo),
-        ("purple", .purple),
-        ("pink", .pink),
-        ("brown", .brown),
-        ("gray", .gray)
-    ]
+    @State private var showAddCategorySheet = false
 
     var isSaveDisabled: Bool {
         selectedCategory == nil || Double(amountText) == nil || (Double(amountText) ?? 0) <= 0
     }
 
-    var isAddCategoryDisabled: Bool {
-        newCategoryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-    }
-
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 24) {
-                    // Amount input
-                    TextField("Amount (e.g., 12.99)", text: $amountText)
-                        .keyboardType(.decimalPad)
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
-
-                    // Category picker or add new category button
-                    if isAddingCategory {
-                        addCategorySection
-                    } else {
-                        Picker("Category", selection: $selectedCategory) {
-                            Text("Select Category").tag(ExpenseCategory?.none)
+            ZStack {
+                Form {
+                    Section(header: Text("Amount")) {
+                        TextField("e.g. 12.99", text: $amountText)
+                            .keyboardType(.decimalPad)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color(.secondarySystemGroupedBackground))
+                            )
+                    }
+                    
+                    Section(header: Text("Category")) {
+                        Picker("Select Category", selection: $selectedCategory) {
+                            Text("None").tag(ExpenseCategory?.none)
                             ForEach(categories, id: \.self) { category in
                                 Label {
                                     Text(category.name)
@@ -78,145 +51,51 @@ struct AddExpenseView: View {
                                 .tag(Optional(category))
                             }
                         }
-                        .pickerStyle(MenuPickerStyle())
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
-
-                        Button(action: {
-                            isAddingCategory = true
-                            newCategoryName = ""
-                            newCategorySymbol = sfSymbols.first ?? "star.fill"
-                            newCategoryColorName = "blue"
-                        }) {
-                            Label("Add New Category", systemImage: "plus.circle.fill")
-                                .font(.callout)
-                                .foregroundColor(.accentColor)
+                        
+                        Button {
+                            showAddCategorySheet = true
+                        } label: {
+                            Label("Add New Category", systemImage: "plus.circle")
                         }
-                        .padding(.top, -12)
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-
-                    // Date picker
-                    DatePicker("Date", selection: $date, displayedComponents: .date)
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
-
-                    // Note field
-                    TextField("Add a note (optional)", text: $note)
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
-
-                    Spacer(minLength: 20)
-
-                    // Save button
-                    Button(action: saveExpense) {
-                        Text("Save Expense")
-                            .bold()
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(isSaveDisabled ? Color.gray : Color.accentColor)
-                            .foregroundColor(.white)
-                            .cornerRadius(16)
+                    
+                    Section(header: Text("Date")) {
+                        DatePicker("Date", selection: $date, displayedComponents: .date)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color(.secondarySystemGroupedBackground))
+                            )
                     }
-                    .disabled(isSaveDisabled)
+                    
+                    
+                    Section(header: Text("Note (optional)")) {
+                        TextField("e.g. Coffee at Starbucks", text: $note)
+                    }
+                    
+                    Section {
+                        Button(action: saveExpense) {
+                            Text("Save Expense")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
+                        .disabled(isSaveDisabled)
+                    }
                 }
-                .padding()
             }
+            .scrollContentBackground(.hidden)
             .navigationTitle("Add Expense")
             .navigationBarTitleDisplayMode(.inline)
-        }
-    }
-
-    var addCategorySection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            TextField("Category Name", text: $newCategoryName)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
-
-            Text("Pick an Icon")
-                .font(.headline)
-
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 16) {
-                ForEach(sfSymbols, id: \.self) { symbol in
-                    Image(systemName: symbol)
-                        .font(.title2)
-                        .foregroundColor(symbol == newCategorySymbol ? colorFromName(newCategoryColorName) : .gray)
-                        .padding(8)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(symbol == newCategorySymbol ? colorFromName(newCategoryColorName) : .clear, lineWidth: 2)
-                        )
-                        .onTapGesture {
-                            newCategorySymbol = symbol
-                        }
-                }
+            .sheet(isPresented: $showAddCategorySheet) {
+                AddCategorySheetView(isPresented: $showAddCategorySheet, onAdd: { newCategory in
+                    selectedCategory = newCategory
+                })
             }
-
-            Text("Pick a Color")
-                .font(.headline)
-
-            HStack(spacing: 16) {
-                ForEach(colorOptions, id: \.name) { colorOption in
-                    Circle()
-                        .fill(colorOption.color)
-                        .frame(width: 30, height: 30)
-                        .overlay(
-                            Circle()
-                                .stroke(colorOption.name == newCategoryColorName ? Color.primary : .clear, lineWidth: 2)
-                        )
-                        .onTapGesture {
-                            newCategoryColorName = colorOption.name
-                        }
-                }
-            }
-
-            HStack {
-                Button("Cancel") {
-                    isAddingCategory = false
-                }
-                .foregroundColor(.red)
-
-                Spacer()
-
-                Button("Add Category") {
-                    addCategory()
-                }
-                .disabled(isAddCategoryDisabled)
-                .bold()
-            }
-            .padding(.top)
-        }
-        .padding()
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(16)
-    }
-
-    private func addCategory() {
-        let trimmedName = newCategoryName.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedName.isEmpty else { return }
-
-        let newCategory = ExpenseCategory(symbol: newCategorySymbol, name: trimmedName, systemColorName: newCategoryColorName)
-        modelContext.insert(newCategory)
-
-        do {
-            try modelContext.save()
-            selectedCategory = newCategory
-            isAddingCategory = false
-        } catch {
-            print("Failed to add category: \(error.localizedDescription)")
         }
     }
 
     private func saveExpense() {
-        guard
-            let category = selectedCategory,
-            let amount = Double(amountText),
-            amount > 0
-        else { return }
+        guard let category = selectedCategory,
+              let amount = Double(amountText),
+              amount > 0 else { return }
 
         let newExpense = ExpenseItem(amount: amount, date: date, note: note.isEmpty ? nil : note, category: category)
         modelContext.insert(newExpense)
@@ -226,6 +105,127 @@ struct AddExpenseView: View {
             dismiss()
         } catch {
             print("Error saving expense: \(error.localizedDescription)")
+        }
+    }
+}
+struct AddCategorySheetView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Binding var isPresented: Bool
+    var onAdd: (ExpenseCategory) -> Void
+
+    @State private var name = ""
+    @State private var selectedSymbol = "cart.fill"
+    @State private var selectedColor = "blue"
+
+    private let symbols = [
+        // Shopping
+        "cart.fill", "bag.fill", "creditcard.fill", "dollarsign.circle.fill",
+        // Food
+        "fork.knife", "takeoutbag.and.cup.and.straw.fill", "cup.and.saucer.fill",
+        // Transport
+        "car.fill", "bus.fill", "fuelpump.fill", "bicycle", "airplane",
+        // Home
+        "house.fill", "bed.double.fill", "sofa.fill", "lamp.floor.fill",
+        // Entertainment
+        "gamecontroller.fill", "film.fill", "music.note", "headphones",
+        // Bills & Utilities
+        "bolt.fill", "drop.fill", "wifi", "tv.fill", "lightbulb.fill",
+        // Health
+        "cross.case.fill", "pills.fill", "heart.fill",
+        // Others
+        "gift.fill", "star.fill", "globe", "doc.text.fill"
+    ]
+
+    private let colors: [(name: String, color: Color)] = [
+        ("red", .red), ("orange", .orange), ("yellow", .yellow),
+        ("green", .green), ("mint", .mint), ("teal", .teal),
+        ("blue", .blue), ("indigo", .indigo), ("purple", .purple),
+        ("pink", .pink), ("brown", .brown), ("gray", .gray)
+    ]
+
+    var isDisabled: Bool {
+        name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                // Background to match screen
+                Color(.systemGroupedBackground)
+                    .ignoresSafeArea()
+
+                Form {
+                    Section(header: Text("Category Name")) {
+                        TextField("e.g. Groceries", text: $name)
+                    }
+
+                    Section(header: Text("Symbol")) {
+                        ScrollView {
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 12) {
+                                ForEach(symbols, id: \.self) { symbol in
+                                    Image(systemName: symbol)
+                                        .font(.title2)
+                                        .foregroundColor(symbol == selectedSymbol ? colorFromName(selectedColor) : .gray)
+                                        .padding(6)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .stroke(symbol == selectedSymbol ? colorFromName(selectedColor) : .clear, lineWidth: 2)
+                                        )
+                                        .onTapGesture {
+                                            selectedSymbol = symbol
+                                        }
+                                }
+                            }
+                            .padding(.vertical, 6)
+                        }
+                        .frame(minHeight: 150)
+                    }
+
+                    Section(header: Text("Color")) {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack {
+                                ForEach(colors, id: \.name) { item in
+                                    Circle()
+                                        .fill(item.color)
+                                        .frame(width: 30, height: 30)
+                                        .overlay(
+                                            Circle().stroke(item.name == selectedColor ? Color.primary : .clear, lineWidth: 2)
+                                        )
+                                        .onTapGesture {
+                                            selectedColor = item.name
+                                        }
+                                }
+                            }
+                            .padding(.vertical, 4)
+                        }
+                    }
+                }
+                .scrollContentBackground(.hidden) // Remove default form background
+            }
+
+            .navigationTitle("New Category")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        isPresented = false
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Add") {
+                        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                        let category = ExpenseCategory(symbol: selectedSymbol, name: trimmed, systemColorName: selectedColor)
+                        modelContext.insert(category)
+                        do {
+                            try modelContext.save()
+                            onAdd(category)
+                            isPresented = false
+                        } catch {
+                            print("Failed to save category: \(error.localizedDescription)")
+                        }
+                    }
+                    .disabled(isDisabled)
+                }
+            }
         }
     }
 }
