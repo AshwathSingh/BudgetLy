@@ -8,6 +8,8 @@ Effortless Budgeting. Empowered Living.
 
 BudgetLy is a modern, intuitive personal finance app designed to make budgeting simple, insightful, and empowering. Built with a focus on user experience and privacy, BudgetLy helps users take control of their finances without the overwhelm of traditional budgeting tools.
 
+I built this app as I was learning Swift UI and Swift Data, I decided to make a budget tracking app (currently focused more on the expense side, and will add the budget limits etc) as it is a good stepping stone into local storage and creating functional UI elements 
+
 ## 🌟 What Makes BudgetLy Unique?
 1. _Intuitive User Experience_: BudgetLy features a clean, distraction-free interface that makes tracking expenses quick and enjoyable. Every interaction is designed for ease and efficiency, ensuring users can manage their finances on the go.
 2. _Manual Categorization_: Users have full control to assign each expense to the category that fits best. This hands-on approach allows for personalized organization and a deeper understanding of spending habits.
